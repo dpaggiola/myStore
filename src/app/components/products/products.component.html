@@ -1,0 +1,33 @@
+<p>
+  La cantidad {{myShoppingCart.length}}
+</p>
+<p>
+  Total ${{total}}
+</p>
+<button (click)="createNewProduct()">Create</button>
+<button (click)="onShowDetail('12423')">Detalle not found</button>
+<div class="products--grid">
+  <app-product [product]="product"
+               *ngFor="let product of products"
+               (addedProduct)="onAddToShoppingCart($event)"
+               (showProduct)="onShowDetail($event)">
+  </app-product>
+  <button (click)="loadMore()">Load more</button>
+</div>
+<div class="product-detail" [class.active]="showProductDetail">
+  {{ statusDetail }}
+  <div *ngIf="productChosen">
+    <button (click)="toggleProductDetail()">Close</button>
+    <h1>{{ productChosen.id }}</h1>
+    <p>{{productChosen.title}}</p>
+    <swiper
+      [slidesPerView]="1">
+      <ng-template swiperSlide *ngFor="let img of productChosen.images">
+        <img class="imagen" [src]="img" alt="image">
+      </ng-template>
+    </swiper>
+    <p> {{ productChosen.description }}</p>
+    <button (click)="updateProduct()">Edit</button>
+    <button (click)="deleteProduct()">Delete</button>
+  </div>
+</div>
