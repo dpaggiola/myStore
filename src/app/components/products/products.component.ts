@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {zip} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 
@@ -11,11 +11,13 @@ import {ProductsService} from "../../services/products.service"
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent {
 
   myShoppingCart: Product [] = [];
   total = 0;
-  products: Product [] = [];
+  @Input() products: Product [] = [];
+  @Input() limit = 10;
+  @Input()  offset = 0;
   showProductDetail = false;
   productChosen: Product = {
     id:'',
@@ -28,8 +30,6 @@ export class ProductsComponent implements OnInit {
     },
     description: ''
   };
-  limit = 10;
-  offset = 0;
   statusDetail: 'loading' | 'success' | 'error' | 'init' = 'init';
 
 
@@ -37,13 +37,6 @@ export class ProductsComponent implements OnInit {
     this.myShoppingCart = this.storeService.getShoppingCart();
   }
 
-  ngOnInit(): void {
-    this.productsService.getProductsByPage(10, 0)
-    .subscribe(data => {
-      this.products = data;
-      this.offset += this.limit;
-    });
-  }
 
   onAddToShoppingCart(product: Product) {
     this.storeService.addProduct(product);
@@ -119,14 +112,6 @@ export class ProductsComponent implements OnInit {
         const productIndex = this.products.findIndex(item => item.id === this.productChosen.id);
         this.products.splice(productIndex, 1);
         this.showProductDetail = false;
-      });
-  }
-
-  loadMore() {
-    this.productsService.getProductsByPage(this.limit, this.offset)
-      .subscribe(data => {
-        this.products = this.products.concat(data);
-        this.offset += this.limit;
       });
   }
 
